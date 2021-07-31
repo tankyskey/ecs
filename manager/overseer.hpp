@@ -4,6 +4,10 @@
 #include "entityManager.hpp"
 #include "systemManager.hpp"
 
+#include "../utils/utils.hpp"
+
+#include <vector>
+
 class Overseer {
     private:
         ComponentManager* componentManager = new ComponentManager;
@@ -11,46 +15,66 @@ class Overseer {
         SystemManager* systemManager = new SystemManager;
 
     public:
-        Overseer() {
-        }
 
         // entity
-        int createEntity() {
+        int createEntity()
+        {
             return entityManager->createEntity();
         }
 
-        void destroyEntity(int eId) {
+        void destroyEntity(Entity eId)
+        {
             entityManager->destroyEntity( eId );
             componentManager->entityDestroyed( eId );
             systemManager->entityDestroyed( eId );
         }
 
+        // entity/component
+        template <typename T>
+        void addComponent(Entity e, T cp)
+        {
+            CPId_t id = componentManager->addComponent<T>(e, cp);
+            Signature s = entityManager->addComponent(e, id);
+            systemManager->entityChanged(e, s);
+        }
+
+        template <typename T>
+        void removeComponent(Entity eId)
+        {
+            Signature s = componentManager->removeComponent<T>(eId);
+            systemManager->entityChanged(eId, s);
+        }
+
+        template <typename T>
+        T& getComponent(Entity eId)
+        {
+            return componentManager->getComponent<T>(eId);
+        }
+
         // component
         template <typename T>
-        void registerComponent() {
+        void registerComponent()
+        {
             componentManager->registerComponent<T>();
-        }
-
-        template <typename T>
-        void addComponent(int id, T cp) {
-            componentManager->addComponent<T>(id, cp);
-        }
-
-        template <typename T>
-        void removeComponent(int id) {
-            componentManager->removeComponent<T>(id);
-        }
-
-        template <typename T>
-        T& getComponent(int eId) {
-            return componentManager->getComponent<T>(eId);
         }
 
         // system
         template <typename T>
-        void registerSystem() {
-            systemManager->addSystem<T>();
+        T* addSystem()
+        {
+            return systemManager->addSystem<T>();
         }
 
+        template <typename S, typename C>
+        void require()
+        {
+            systemManager->require<S>( getComponentId<C>() );
+        }
+
+        template <typename T>
+        CPId_t getComponentId()
+        {
+            return componentManager->getComponentId<T>();
+        }
 };
 

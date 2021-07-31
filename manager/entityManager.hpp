@@ -1,33 +1,59 @@
 #pragma once
 
-#include "../utils/cst.hpp"
-#include <array>
+#include "../utils/utils.hpp"
+#include <queue>
+#include <unordered_map>
 
 class EntityManager {
     private:
-        std::array<int, MAX_ENTITY> availableId;
-        int size;
+        std::queue<Entity> availableId;
+
         int nextId;
 
+        std::unordered_map<Entity, Signature> signatures;
+
     public:
-        EntityManager(): size(0), nextId(0)
+        EntityManager(): nextId(0)
         {
         }
 
-        /// @return: new entity id
-        int createEntity()
+        Entity createEntity()
         {
-            if( size == 0 )
-                return nextId++;
+            Entity id;
 
-            int id = availableId[0];
-            size--;
-            availableId[0] = availableId[size];
+            if( availableId.empty() ) {
+                id = nextId++;
+            }
+            else {
+                id = availableId.front();
+                availableId.pop();
+            }
+
+            signatures[id].reset();
             return id;
         }
 
-        void destroyEntity(int id)
+        void destroyEntity(Entity e)
         {
-            availableId[size++] = id;
+            availableId.push(e);
+            signatures[e].reset();
         }
+
+        Signature getSignature(Entity e)
+        {
+            return signatures[e];
+        }
+
+        Signature addComponent(Entity e, CPId_t id)
+        {
+            signatures[e].set(id, 1);
+            return signatures[e];
+        }
+
+        Signature removeComponent(Entity e, CPId_t id)
+        {
+            signatures[e].set(id, 0);
+            return signatures[e];
+        }
+
 };

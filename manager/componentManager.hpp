@@ -1,20 +1,18 @@
 #pragma once
-#include "../utils/utils.hpp"
 
+#include <stdio.h>
 #include <typeinfo>
 #include <unordered_map>
+#include "../utils/utils.hpp"
 #include "../components/componentsArray.hpp"
-#include <stdio.h>
 
 class ComponentManager {
     private:
-        int componentCount = 0;
         std::unordered_map<const char*, IComponentsArray*> CPArrayMap;
+        std::unordered_map<const char*, CPId_t> CPIdMap;
+        CPId_t nextFreeId = 0;
 
     public:
-        ComponentManager()
-        {
-        }
 
         template <typename T>
         void registerComponent()
@@ -23,18 +21,25 @@ class ComponentManager {
 
             //creer un nouvel array de component T
             CPArrayMap.insert({name, new ComponentsArray<T>()});
+            CPIdMap.insert({name, nextFreeId});
 
-            componentCount++;
-            printf("%s, registered\n", name);
+            nextFreeId++;
         }
 
         template <typename T>
-        void addComponent(int eId, T component)
+        CPId_t addComponent(Entity e, T component)
         {
             const char* name = typeid(T).name();
+            getCPArray<T>(name)->addComponent(e, component) ;
+            return CPIdMap[name];
+        }
 
-            //((ComponentsArray<T>*)CPArrayMap[name])->addComponent(eId, component);
-            getCPArray<T>(name)->addComponent(eId, component) ;
+        template <typename T>
+        CPId_t removeComponent(Entity e)
+        {
+            const char* name = typeid(T).name();
+            getCPArray<T>( name )->removeComponent(e);
+            return CPIdMap[name];
         }
 
         template <typename T>
@@ -44,21 +49,21 @@ class ComponentManager {
         }
 
         template <typename T>
-        void removeComponent(int eId)
+        T& getComponent(Entity e)
         {
-            getCPArray<T>( typeid(T).name() )->removeComponent(eId);
+            return getCPArray<T>( typeid(T).name() )->getComponent(e);
+        }
+
+        void entityDestroyed(Entity e)
+        {
+            for(auto cparray: CPArrayMap)
+                cparray.second->entityDestroyed( e );
         }
 
         template <typename T>
-        T& getComponent(int eId)
+        CPId_t getComponentId()
         {
-            return getCPArray<T>( typeid(T).name() )->getComponent(eId);
-        }
-
-        void entityDestroyed(int eId)
-        {
-            for(auto cparray: CPArrayMap)
-                cparray.second->entityDestroyed( eId );
+            return CPIdMap[typeid(T).name()];
         }
 };
 

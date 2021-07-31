@@ -9,3 +9,6 @@ system: system/*.hpp
 
 manager: manager/*.hpp
 	g++ -c manager/*.hpp -o obj/$(patsubst .hpp, .o, $^)
+
+engine: system manager
+	g++ -c engine.hpp -o obj/engine.o

@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <cassert>
 
-#include "../utils/cst.hpp"
+#include "../utils/utils.hpp"
 
 // [ C1 | C2 | C3 | C4 ] array
 // [ 0  | 1  | 2  | 3  ] i2e
@@ -25,14 +25,14 @@ template <typename T>
 class ComponentsArray: public IComponentsArray {
     private:
         std::array<T, MAX_ENTITY> array;
-        std::unordered_map<int, int> e2i;
+        std::unordered_map<Entity, int> e2i;
         int size;
 
     public:
 
         ComponentsArray(): size(0) {}
 
-        void addComponent(int eId, T& component) {
+        void addComponent(Entity eId, T& component) {
             array[size] = component;
             e2i[eId] = size;
             // <=> e2i.insert({eId, size});
@@ -40,7 +40,7 @@ class ComponentsArray: public IComponentsArray {
             size++;
         }
 
-        void removeComponent(int eId) {
+        void removeComponent(Entity eId) {
             int pos = e2i[eId],
                 last = size -1;
 
@@ -50,7 +50,7 @@ class ComponentsArray: public IComponentsArray {
             size--;
         }
 
-        T& getComponent(int eId) {
+        T& getComponent(Entity eId) {
             assert(e2i.find(eId) != nullptr && "entity dosent possess this type of component" );
             return array[ e2i[eId] ];
         }
