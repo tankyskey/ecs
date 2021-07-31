@@ -2,17 +2,22 @@
 #include "../utils/utils.hpp"
 
 struct Rigibody {
-    vect3 velocity;
-    vect3 acceleration;
-    vect3 angularVelocity;
-    vect3 angularAcceleration;
-    vect3 mass;
+    Vect3 velocity;
+    Vect3 acceleration;
+    Vect3 angularVelocity;
+    Vect3 angularAcceleration;
+    int mass;
 };
 
 struct Transform {
-    vect3 position;
-    vect3 rotaion;
-    vect3 scale;
+    Vect3 position;
+    Vect3 rotaion;
+    Vect3 scale;
+};
+
+struct Solid {
+    // collision (hitbox)
+    // shape (rect, sphere, dot, circle, etc)
 };
 
 struct Damageable {
