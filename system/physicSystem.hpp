@@ -1,33 +1,33 @@
 #pragma once
 
-#include "system.hpp"
-#include "../components/core.hpp"
-#include "../manager/overseer.hpp"
+#include "../engine/engine.hpp"
+#include "../components/2d_core.hpp"
 
 extern Overseer overlord;
 
 class PhysicSystem: public System {
+    private:
     public:
 
         void init()
         {
-            // pour toutes les entites existante e:
-            //  si signature(e) == this->signature:
-            //   this->entities.add( e );
         }
 
         void update(double dt)
         {
-            double half_dt_square = dt * dt * 0.5;
+            double delay;
 
-            for( int e: entities ) {
-                auto& r = overlord.getComponent<Rigibody>( e );
-                auto& t = overlord.getComponent<Transform>( e );
+            for(auto eId: entities) {
+                auto& rigibody = overlord.getComponent<Rigibody>(eId);
+                auto& transform = overlord.getComponent<Transform>(eId);
 
+                transform.position += rigibody.velocity * dt;
 
-                t.position += r.velocity * dt;
-
-                r.velocity += r.acceleration * dt;
+                rigibody.velocity += rigibody.acceleration * dt;
             }
+
+            delay = 1000/60 - dt;
+            if( delay > 0)
+                SDL_Delay(delay);
         }
 };

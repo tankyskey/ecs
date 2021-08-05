@@ -4,7 +4,7 @@
 #include <typeinfo>
 #include <unordered_map>
 #include "../utils/utils.hpp"
-#include "../components/componentsArray.hpp"
+#include "../core/componentsArray.hpp"
 
 class ComponentManager {
     private:

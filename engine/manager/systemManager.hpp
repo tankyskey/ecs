@@ -2,7 +2,7 @@
 
 #include <typeinfo>
 #include <unordered_map>
-#include "../system/system.hpp"
+#include "../core/system.hpp"
 
 class SystemManager {
     private:

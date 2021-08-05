@@ -11,8 +11,8 @@ class Vect3 {
         }
 
         void operator+=(const Vect3& v) {
-             x += v.x,
-             y += v.y,
+             x += v.x;
+             y += v.y;
              z += v.z;
         }
 
@@ -45,5 +45,5 @@ class Vect3 {
                          y - v.y,
                          z - v.z);
         }
-
 };
+

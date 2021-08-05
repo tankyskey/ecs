@@ -1,31 +1,26 @@
 #pragma once
-#include "../utils/utils.hpp"
+#include "../engine/engine.hpp"
+#include "../engine/math/vect3.hpp"
+#include <SDL2/SDL.h>
 
 struct Rigibody {
     Vect3 velocity;
     Vect3 acceleration;
+
     Vect3 angularVelocity;
     Vect3 angularAcceleration;
-    int mass;
 };
 
 struct Transform {
     Vect3 position;
     Vect3 rotaion;
-    Vect3 scale;
-};
-
-struct Solid {
-    // collision (hitbox)
-    // shape (rect, sphere, dot, circle, etc)
-};
-
-struct Damageable {
-    int Health;
+    Vect3 dimension;
 };
 
 struct Renderable {
+    SDL_Texture* texture;
+    SDL_Rect dst;
+    SDL_Rect src;
+    int layer;
 };
 
-struct Player {
-};
