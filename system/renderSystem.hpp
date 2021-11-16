@@ -57,23 +57,18 @@ class RenderSystem: public System {
             double delay;
             SDL_RenderClear( renderer );
 
-            viewPort.x = overlord.getComponent<Transform>( playerId ).position.x * 256;
-            viewPort.y = overlord.getComponent<Transform>( playerId ).position.y * 128;
+            viewPort.x = overlord.getComponent<Transform>( playerId ).position.x - width/4;
+            viewPort.y = overlord.getComponent<Transform>( playerId ).position.y - height/4;
 
             for( Entity e: entities ) {
                 auto& renderable = overlord.getComponent<Renderable>( e );
                 auto& transform = overlord.getComponent<Transform>( e );
 
-                renderable.dst.x = (int)transform.position.x * 256;
-                renderable.dst.y = (int)transform.position.y * 128;
+                renderable.dst.x = (int)transform.position.x;
+                renderable.dst.y = (int)transform.position.y;
 
                 renderable.dst.x -= viewPort.x;
                 renderable.dst.y -= viewPort.y;
-
-                if( e == playerId ) {
-                    renderable.dst.x  += width / 4;
-                    renderable.dst.y  += height / 4;
-                }
 
                 if( onScreen(renderable) )
                     SDL_RenderCopy( renderer, renderable.texture, &renderable.src, &renderable.dst);

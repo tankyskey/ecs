@@ -9,8 +9,8 @@ extern Overseer overlord;
 class EventSystem: public System {
     private:
         char moving = 0;
-        double xspeed = 2.0/512.0,
-               yspeed = 1.0/512.0;
+        double xspeed = 0.2,
+               yspeed = 0.1;
 
     public:
         bool quit = false;

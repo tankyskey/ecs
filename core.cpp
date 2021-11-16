@@ -85,18 +85,24 @@ void Core::createMap()
 {
     for(int i=0; i<mapH; i++){
         for(int j=0; j<mapW; j++){
-            Entity id = createObject("res/grassyGround.png", 512, 512, i-j, j+i);
+            Entity id = createObject("res/grassyGround.png", 512, 512, i*256-j*256, j*128+i*128);
             overlord.getComponent<Renderable>(id).isGround = true;
         }
     }
     createObject("res/usine.png", 1024, 1024, 0, 0);
-    createObject("res/usine.png", 1024, 1024, 2, 2);
+    createObject("res/usine.png", 1024, 1024, 512, 256);
+    Entity ennemy1 = createObject("res/tanks2.png", 1024, 1024, 512, 256);
+    playerId = createObject("res/tanks2.png", 1024, 1024, 0, 0);
 
-    playerId = createObject("res/tanks.png", 1024, 1024, 0, 0);
+    createObject("res/tree_pine.png", 1024, 1024, -512, 256);
+    createObject("res/tree_pine.png", 1024, 1024, -612, 356);
+    createObject("res/tree_pine.png", 1024, 1024, -412, 300);
+    createObject("res/tree_pine.png", 1024, 1024, -412, 356);
+
     overlord.addComponent<Player>(playerId, Player{});
     overlord.addComponent<Rigibody>(playerId, Rigibody{});
 
     systems.render->setPlayerId( playerId );
 
-    //Entity ennemy1 = createObject("res/tanks.png", 1024, 1024, 0, 0);
 }
+
