@@ -10,8 +10,7 @@
 Overseer overlord;
 Core core;
 
-void eventRoutine();
-void renderRoutine();
+void windowRoutine();
 void physicRoutine();
 
 int main()
@@ -22,35 +21,21 @@ int main()
 
     core.createMap();
 
-    std::thread renderThread (renderRoutine);
     std::thread physicThread (physicRoutine);
 
-    eventRoutine(); // doit être dans le thread de core.init
-    renderThread.join();
+    windowRoutine();
     physicThread.join();
 
     return 0;
 }
 
-void eventRoutine()
+void windowRoutine()
 {
     double t0, t1, dt = 0;
     while(!core.systems.event->quit) {
         t0 = SDL_GetTicks();
 
         core.systems.event->update(dt);
-
-        t1 = SDL_GetTicks();
-        dt = t1 - t0;
-    }
-}
-
-void renderRoutine()
-{
-    double t0, t1, dt = 0;
-    while(!core.systems.event->quit) {
-        t0 = SDL_GetTicks();
-
         core.systems.render->update(dt);
 
         t1 = SDL_GetTicks();

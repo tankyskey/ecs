@@ -92,7 +92,6 @@ class EventSystem: public System {
 
         void init()
         {
-            onKeyPress(SDLK_z, move);
         }
 
         bool onKeyPress(SDL_Keycode key, pfun fun, bool ignoreHolding=false)
@@ -108,28 +107,26 @@ class EventSystem: public System {
         void update(double dt)
         {
             SDL_Event e = {0};
-            SDL_WaitEvent(&e);
+            while( SDL_PollEvent(&e) ) {
+                switch(e.type) {
+                    case SDL_QUIT:
+                        quit = true;
+                        break;
 
-            switch(e.type) {
-                case SDL_QUIT:
-                    quit = true;
-                    break;
+                    case SDL_KEYDOWN:
+                        downKey.push_back(e.key.keysym.sym);
+                        keyDownEvent(e);
+                        break;
 
-                case SDL_KEYDOWN:
-                    keyDownEvent(e);
-                    downKey.push_back(e.key.keysym.sym);
+                    case SDL_KEYUP:
+                        downKey.remove(e.key.keysym.sym);
+                        keyUpEvent(e);
+                        break;
 
-                    break;
-
-                case SDL_KEYUP:
-                    downKey.remove(e.key.keysym.sym);
-                    keyUpEvent(e);
-                    break;
-
-                default:
-                    break;
+                    default:
+                        break;
+                }
             }
-
         }
 
     private:
@@ -205,10 +202,6 @@ class EventSystem: public System {
                 rigibody.velocity.y = 0;
                 rigibody.velocity.x = 0;
             }
-        }
-
-        void doAction()
-        {
         }
 };
 
